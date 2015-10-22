@@ -73,3 +73,31 @@ img {
  * YOUR CODE HERE
  */
 
+#container {
+    height:1300px;
+    background-color: steelblue;
+}
+
+#signInView {
+    background-color: slategrey;
+    text-align: center;
+    padding-bottom: 100px
+}
+
+#signIn {
+    padding: 100px 0px;
+}
+
+#signUpView {
+    text-align: center;
+    display: inline-block;
+    margin: 0px 40px;
+    border: 2px dashed cyan;
+}
+
+#logInView {
+    text-align: center;
+    display: inline-block;
+    margin: 0px 40px;
+    border: 2px dashed cyan;
+}
