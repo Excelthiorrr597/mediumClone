@@ -127,9 +127,12 @@ var HomeView = React.createClass({
 	_handleEnter: function(event){
 		if (event.which === 13) {
 			event.preventDefault()
-			var message = event.target.innerHTML
+			var message = event.target.innerHTML,
+				title = this.refs.titleBox.getDOMNode().innerHTML
+
+			this.refs.titleBox.getDOMNode().innerHTML = ''
 			event.target.innerHTML = ''
-			this.props.deliverMessage(message)
+			this.props.deliverMessage(title,message)
 		}
 	},
 
@@ -154,6 +157,11 @@ var HomeView = React.createClass({
 			<div>
 				<div id="viewButtons">
 					<Button onClick={this._logOut} label='Log Me Out!' style={style}/>
+				</div>
+				<div
+					id='titleContainer'
+					contentEditable='true'
+					ref='titleBox'>
 				</div>
 				<div 
 					id="messageContainer" 
@@ -188,11 +196,18 @@ var PostBox = React.createClass({
 var Posts = React.createClass({
 
 	render: function(){
-		var message = this.props.model.attributes.content
+		var message = this.props.model.attributes.content,
+			title = this.props.model.attributes.title,
+			styleObj = {
+				'fontWeight':'bold',
+				'borderBottom':'2px solid white'
+			}
+
 
 		return (
 			<div id="individualPosts">
-				{message}
+				<p style={styleObj}>{title}</p>
+				<p>{message}</p>				
 			</div>
 			)
 	}
@@ -222,14 +237,21 @@ var UserView = React.createClass({
 	_handleEnter: function(event){
 		if (event.which === 13) {
 			event.preventDefault()
-			var message = event.target.innerHTML
+			var message = event.target.innerHTML,
+				title = this.refs.titleBox.getDOMNode().innerHTML
+
+			this.refs.titleBox.getDOMNode().innerHTML = ''
 			event.target.innerHTML = ''
-			this.props.deliverMessage(message)
+			this.props.deliverMessage(title,message)
 		}
 	},
 
-	_goHome:function(){
+	_goHome: function(){
 		location.hash = 'home'
+	},
+
+	_logOut: function() {
+		location.hash = 'logOut'
 	},
 
 	render: function(){
@@ -240,13 +262,21 @@ var UserView = React.createClass({
 		return (
 			<div>
 				<div id="viewButtons">
-					<Button onClick={this._goHome} label='Go Back Home!' style={style}/>
+					<Button onClick={this._logOut} label='Log Me Out!' style={style}/>
+				</div>
+				<div
+					id='titleContainer'
+					contentEditable='true'
+					ref='titleBox'>
 				</div>
 				<div 
 					id="messageContainer" 
 					contentEditable='true' 
 					onKeyPress={this._handleEnter}
 					>
+				</div>
+				<div id='viewButtons'>
+					<Button onClick={this._goHome} label='Go Back Home!' style={style}/>
 				</div>
 				<PostBox collection={this.props.collection}/>
 			</div>
@@ -294,9 +324,10 @@ var MediumRouter = Backbone.Router.extend({
 		'user': 'showUserView'
 	},
 
-	deliverMessage: function(message){
+	deliverMessage: function(title,message){
 		var pm = new PostModel()
 		pm.set({
+			title: title,
 			content: message,
 			userid: Parse.User.current().id
 		})
@@ -304,6 +335,7 @@ var MediumRouter = Backbone.Router.extend({
 		pm.save(null,{
 			headers: pm.parseHeaders
 		})
+		window.pm = pm
 	},
 
 	logOut: function(){
