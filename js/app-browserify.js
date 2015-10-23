@@ -287,6 +287,7 @@ var UserView = React.createClass({
 var MediumRouter = Backbone.Router.extend({
 
 	routes: {
+		'@anyroute': 'showHomeView',
 		'home': 'showHomeView',
 		'logOut': 'logOut',
 		'login': 'showSignInView',
